@@ -1,32 +1,6 @@
 
-function getRequestObject() {
-  if (window.XMLHttpRequest) {
-    return(new XMLHttpRequest());
-  } else {
-    return(null);
-  }
-}
-
-// Make an HTTP request to the given address. 
-// Display result in an alert box.
-
-function ajaxAlert(address) {
-  var request = getRequestObject();
-  request.onreadystatechange = 
-    function() { showResponseAlert(request); }
-  request.open("GET", "api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=29e67ba9c14f9f26ee408b825f02a00c", true);
-  request.send(null);
-}
-
-
-function test(){
-	$.ajax({ url:"api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=29e67ba9c14f9f26ee408b825f02a00c"
- }).done(function(data){console.log(data);})
-
-}
-
 function createTable(){
-	document.getElementById("Table").innerHTML =  '<table style="width:100%">'+
+  document.getElementById("Table").innerHTML =  '<table style="width:100%">'+
 '  <tr>'+
 '    <th>City Name</th>'+
 '    <th>Timestamp<br/>(yyyy:mm:dd:hh:mm:ss)</th> '+
@@ -39,24 +13,38 @@ function createTable(){
 '    <td>Tokyo,JP</td>'+
 '    <td>Smith</td>'+
 '    <td>50</td>'+
+'    <td></td>'+
+'    <td></td>'+
+'    <td></td>'+
 '  </tr>'+
 '  <tr>'+
 '    <td>Eve</td>'+
 '    <td>Jackson</td>'+
 '    <td>94</td>'+
+'    <td></td>'+
+'    <td></td>'+
+'    <td></td>'+
 '  </tr>'+
 '</table>';
-	
-;
+  
+
 }
 
-require("jsdom").env("", function(err, window) {
-    if (err) {
-        console.error(err);
-        return;
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML = this.responseText;
+      parseRequest(this.responseText);
     }
- 
-    var $ = require("jquery")(window);
-});
+  };
+  xhttp.open("GET", "http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=29e67ba9c14f9f26ee408b825f02a00c", true);
+  xhttp.send();
+  document.getElementById("demo").innerHTML = this.responseText;
 
-test();
+}
+
+function parseRequest(request){
+  var parsedText = JSON.parse(request);
+  document.getElementById("demo").innerHTML = parsedText.main.temp;
+}
